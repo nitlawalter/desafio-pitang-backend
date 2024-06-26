@@ -1,17 +1,18 @@
 package br.com.tce.desafiopitangbackend.service;
 
 import br.com.tce.desafiopitangbackend.model.User;
-import br.com.tce.desafiopitangbackend.repository.CarRepository;
 import br.com.tce.desafiopitangbackend.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
-    private CarRepository carRepository;
 
     public User save(User user) {
         return userRepository.save(user);
@@ -25,4 +26,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByLogin(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with login: " + username);
+        }
+        return user;
+    }
 }
