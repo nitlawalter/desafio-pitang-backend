@@ -11,6 +11,7 @@ import java.util.List;
 
 @Data
 @Entity
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
@@ -26,7 +27,7 @@ public class User implements UserDetails {
     private String createdAt;
     private String lastLogin;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Car> cars;
 
     @Override
