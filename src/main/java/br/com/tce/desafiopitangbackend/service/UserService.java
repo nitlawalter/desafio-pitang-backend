@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
@@ -33,5 +35,17 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with login: " + username);
         }
         return user;
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public boolean findByEmail(String email) {
+        return userRepository.findByEmail(email) != null;
+    }
+
+    public boolean findByLogin(String login) {
+        return userRepository.findByLogin(login) != null;
     }
 }
