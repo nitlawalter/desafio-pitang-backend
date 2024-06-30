@@ -1,8 +1,11 @@
 package br.com.tce.desafiopitangbackend.controller;
 
+import br.com.tce.desafiopitangbackend.dto.UserRequestDTO;
 import br.com.tce.desafiopitangbackend.exceptions.ErrorResponse;
+import br.com.tce.desafiopitangbackend.mapper.UserMapper;
 import br.com.tce.desafiopitangbackend.model.User;
 import br.com.tce.desafiopitangbackend.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,18 +19,19 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @PostMapping()
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        if (userService.findByEmail(user.getEmail())) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequestDTO userDto) {
+        if (userService.findByEmail(userDto.getEmail())) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Email already exists", 400));
         }
-        if (userService.findByLogin(user.getLogin())) {
+        if (userService.findByLogin(userDto.getLogin())) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Login already exists", 400));
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = userMapper.toUser(userDto);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userService.save(user);
         return ResponseEntity.ok(user);
     }
@@ -47,19 +51,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userDto) {
         User user = userService.findUserById(id);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        user.setFirstName(userDetails.getFirstName());
-        user.setLastName(userDetails.getLastName());
-        user.setEmail(userDetails.getEmail());
-        user.setBirthday(userDetails.getBirthday());
-        user.setLogin(userDetails.getLogin());
-        user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-        user.setPhone(userDetails.getPhone());
-        user.setCars(userDetails.getCars());
+        userMapper.toUser(userDto);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
         userService.save(user);
         return ResponseEntity.ok(user);
     }

@@ -15,7 +15,9 @@ public class Car {
     @Column(name = "car_year")
     private int carYear;
 
+    @Column(name = "license_plate", unique = true)
     private String licensePlate;
+
     private String model;
     private String color;
 
