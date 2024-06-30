@@ -1,7 +1,7 @@
 package br.com.tce.desafiopitangbackend.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,14 +10,16 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "first_name")
     private String firstName;
 
@@ -39,11 +41,11 @@ public class User implements UserDetails {
     private String lastLogin;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @ToString.Exclude
     private List<Car> cars;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Retornar as autoridades do usuário (exemplo, uma lista de roles)
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
@@ -51,4 +53,62 @@ public class User implements UserDetails {
     public String getUsername() {
         return login;
     }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
 }

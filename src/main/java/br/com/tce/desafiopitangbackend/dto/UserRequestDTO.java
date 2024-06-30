@@ -1,34 +1,39 @@
 package br.com.tce.desafiopitangbackend.dto;
 
-import br.com.tce.desafiopitangbackend.model.Car;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserRequestDTO {
 
-    @NotBlank(message = "First name is mandatory")
-    private String firstName;
+        @NotBlank(message = "First name is mandatory")
+        private String firstName;
 
-    @NotBlank(message = "Last name is mandatory")
-    private String lastName;
+        @NotBlank(message = "Last name is mandatory")
+        private String lastName;
 
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is mandatory")
-    private String email;
+        @NotBlank(message = "Email is mandatory")
+        @Email(message = "Email should be valid")
+        private String email;
 
-    @NotBlank(message = "Login is mandatory")
-    private String login;
+        private Date birthday;
 
-    @NotBlank(message = "Password is mandatory")
-    private String password;
+        @NotBlank(message = "Login is mandatory")
+        private String login;
 
-    private String birthday;
-    private String phone;
-    private List<Car> cars;
+        @NotBlank(message = "Password is mandatory")
+        private String password;
+
+        private String phone;
+
+        private List<CarRequestDTO> cars;
+
 }

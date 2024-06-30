@@ -2,25 +2,28 @@ package br.com.tce.desafiopitangbackend.controller;
 
 import br.com.tce.desafiopitangbackend.dto.UserRequestDTO;
 import br.com.tce.desafiopitangbackend.exceptions.ErrorResponse;
-import br.com.tce.desafiopitangbackend.mapper.UserMapper;
 import br.com.tce.desafiopitangbackend.model.User;
 import br.com.tce.desafiopitangbackend.service.UserService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@AllArgsConstructor
+@Validated
 public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
+
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @PostMapping()
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequestDTO userDto) {
@@ -30,8 +33,16 @@ public class UserController {
         if (userService.findByLogin(userDto.getLogin())) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Login already exists", 400));
         }
-        User user = userMapper.toUser(userDto);
+
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setLogin(userDto.getLogin());
+        user.setBirthday(userDto.getBirthday());
+        user.setPhone(userDto.getPhone());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
         userService.save(user);
         return ResponseEntity.ok(user);
     }
@@ -51,12 +62,17 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userDto) {
+    public ResponseEntity<User> updateUser(@Valid @PathVariable Long id, @RequestBody UserRequestDTO userDto) {
         User user = userService.findUserById(id);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        userMapper.toUser(userDto);
+        user.setEmail(userDto.getEmail());
+        user.setLogin(userDto.getLogin());
+        user.setBirthday(userDto.getBirthday());
+        user.setPhone(userDto.getPhone());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         userService.save(user);

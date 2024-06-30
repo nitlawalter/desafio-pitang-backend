@@ -2,7 +2,6 @@ package br.com.tce.desafiopitangbackend.service;
 
 import br.com.tce.desafiopitangbackend.model.User;
 import br.com.tce.desafiopitangbackend.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,10 +10,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public User save(User user) {
         return userRepository.save(user);

@@ -1,11 +1,15 @@
 package br.com.tce.desafiopitangbackend.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@Builder
 @Entity
 @Table(name = "cars")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Car {
 
     @Id
