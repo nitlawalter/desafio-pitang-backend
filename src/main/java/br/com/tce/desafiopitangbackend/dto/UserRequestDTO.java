@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class UserRequestDTO {
         @Email(message = "Email should be valid")
         private String email;
 
-        private Date birthday;
+        private LocalDate birthday;
 
         @NotBlank(message = "Login is mandatory")
         private String login;

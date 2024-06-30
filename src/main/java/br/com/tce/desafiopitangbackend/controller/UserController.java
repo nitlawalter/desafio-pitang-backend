@@ -27,10 +27,10 @@ public class UserController {
 
     @PostMapping()
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequestDTO userDto) {
-        if (userService.findByEmail(userDto.getEmail())) {
+        if (userService.findByEmail(userDto.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Email already exists", 400));
         }
-        if (userService.findByLogin(userDto.getLogin())) {
+        if (userService.findByLogin(userDto.getLogin()).isPresent()) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Login already exists", 400));
         }
 

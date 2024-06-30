@@ -6,11 +6,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -29,7 +34,7 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    private Date birthday;
+    private LocalDate birthday;
 
     @Column(unique = true)
     private String login;
@@ -37,7 +42,7 @@ public class User implements UserDetails {
     private String password;
 
     private String phone;
-    private String createdAt;
+    private LocalDateTime createdAt;
     private String lastLogin;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
@@ -47,6 +52,11 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 
     @Override
@@ -75,7 +85,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -99,7 +109,7 @@ public class User implements UserDetails {
         this.lastName = lastName;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 
